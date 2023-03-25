@@ -8,13 +8,16 @@ function parseNL(str, subtitles) {
 }
 
 function filterNL(namelist, subtitles) {
-  const blacklist = ['', 'I', '-', 'Ah', 'B-minus', 'Right', 'Well', 'October', 'RBG'];
+  const blacklist = ['', 'I', '-', 'Ah', 'B-minus', 'Right', 'Well', 'October', 'RBG', 'Oh', 'Really', 'Then', 'It\'s OK', 'No', 'I\'m', 'Dad', 'Shoulder', 'English', 'X-ray', 'ER'];
 
   let subtext = subtitles.map(sub=>sub.data.text).join(' ');
   let parsed = {};
   let keys = Object.keys(namelist).filter(name=>!blacklist.includes(name) && name.split(' ').filter(part=>/^[a-z]/.test(part)).length == 0 && subtext.includes(name));
   for(let i = 0; i < keys.length; i++) {
     let key = keys[i];
+    if(key == namelist[key]) {
+      continue;
+    }
     parsed[key] = namelist[key];
   }
   return parsed;
@@ -55,18 +58,6 @@ function parseTranslation(str) {
   }
 
   return ext;
-}
-
-function fixJson(json) {
-  const unescapedQuoteRegex = /(?<!\\)"/g; // negative lookbehind to match unescaped quotes
-  const hasUnescapedQuote = unescapedQuoteRegex.test(json);
-
-  if (hasUnescapedQuote) {
-    const fixedJson = json.replace(unescapedQuoteRegex, '\\"');
-    return fixedJson;
-  }
-
-  return json;
 }
 
 function parseJSON(str) {
