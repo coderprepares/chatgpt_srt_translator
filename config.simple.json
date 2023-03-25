@@ -1,0 +1,9 @@
+{
+  "OPENAI_API_KEY": "",
+  "CHATGPT_AUTH_TOKEN": "",
+  "CHATGPT_COOKIES": "",
+  "SOCKS_PROXY_HOST": "",
+  "SOCKS_PROXY_PORT": "",
+  "TARGET_LANGUAGE": "",
+  "APP_DEBUG": false
+}
