@@ -63,10 +63,10 @@ function toSrt(obj, idx) {
     let length = obj.data.t.length;
 
     if(lines.length > 1 || length > 25) {
-      obj.data.mark = true;
+      mark = true;
     }
   } else {
-    obj.data.mark = true;
+    mark = true;
   }
 
   if(mark) {
