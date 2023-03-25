@@ -1,6 +1,9 @@
 node_modules
 .DS_Store
 config.json
-logs/
-res/
-src/
+/logs/*
+!/logs/.gitkeep
+/res/*
+!/res/.gitkeep
+/src/*
+!/src/.gitkeep
