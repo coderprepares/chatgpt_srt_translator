@@ -23,7 +23,7 @@
 - 语言
   - 填写`TARGET_LANGUAGE`
 
-## 示例
+## 配置文件示例
 ```json
 {
   "OPENAI_API_KEY": "sk-xxxxxxxxxx",
@@ -36,9 +36,9 @@
 ```
 
 # TODO
-[ ]对话体拆分匹配
-[ ]字幕漏译后置重试
-[ ]人名漏译后置检查
+- [ ] 对话体拆分匹配
+- [ ] 字幕漏译后置重试
+- [ ] 人名漏译后置检查
 
 # 参考
 - [gnehs/subtitle-translator](https://github.com/gnehs/subtitle-translator)
