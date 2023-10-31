@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const colors = require('colors');
 const { parseSync, stringifySync } = require('subtitle');
 const {log, setFile, dump, undump, writeUnicodeSrt} = require('./debug.js');
@@ -149,7 +150,7 @@ async function splitSubs(subs, arr, namelist) {
 }
 
 async function main() {
-  let list = fs.readdirSync('./src');
+  let list = fs.readdirSync(path.join(__dirname, 'src'));
   let supportExtensions = ['srt', 'vtt'];
 
   const SLICE_LEN = 10;
@@ -158,7 +159,7 @@ async function main() {
   for (let subtitleFile of list) {
     if (!supportExtensions.includes(subtitleFile.split('.').pop())) continue;
 
-    if(fs.existsSync(`./res/${subtitleFile}`)) {
+    if(fs.existsSync(path.join(__dirname, `res/${subtitleFile}`))) {
       console.log(`skip ${subtitleFile}`);
       continue;
     }
@@ -173,11 +174,11 @@ async function main() {
       subtitles = undump('subtitles');
       namelist = undump('namelist');
     } catch(e) {
-      subtitles = parseSync(fs.readFileSync(`./src/${subtitleFile}`, 'utf8'))
+      subtitles = parseSync(fs.readFileSync(path.join(__dirname, `src/${subtitleFile}`), 'utf8'))
         .filter(line => line.type === 'cue')
         .map(line => {
           line.data.o = line.data.text;
-          line.data.text = line.data.text.replace(/[\r\n]+/g, ' ').replace(/^\s+|\s+$/g, ''); 
+          line.data.text = line.data.text.replace(/[\r\n]+/g, ' ').replace(/^\s+|\s+$/g, '').replace(/\{.+?\}/g,''); 
           return line;
         });
       namelist = {};
@@ -186,8 +187,13 @@ async function main() {
     let cursor = 0;
     let total = subtitles.length;
     let subs, resp, results, subsNL, addition;
-  
+
     while(cursor < total - 1) {
+      if(subtitles[cursor].data.t) {
+        cursor++;
+        continue;
+      }
+
       let end = cursor + SLICE_LEN;
   
       if(end >= total - 1) {
@@ -235,18 +241,23 @@ async function main() {
         dump(namelist, 'namelist');
         dump(subtitles, 'subtitles');
       }
+
+      // console.log('press any key to continue...');
       // await pause();
     }
 
     subtitles.forEach(sub=>{
       let translation = (sub.data.t ? sub.data.t.split("\n").filter(line=>!!line.trim()).join("\n").replace(/[，。？！：；（）〔〕【】《》‘’“”—、]/g,'  ').replace(/  +/g,'  ').trim() : '***');
-      sub.data.text =  translation + "\n" + sub.data.text;
+      sub.data.text = translation + "\n" + sub.data.text;
+      if(sub.data.o.includes('\\an8')) {
+        sub.data.text = '{\\an8}' + sub.data.text;
+      }
     });
 
     if(config.APP_DEBUG) {
-      writeUnicodeSrt(`./res/${subtitleFile}`, subtitles, 'utf16le');
+      writeUnicodeSrt(path.join(__dirname, `res/${subtitleFile}`), subtitles, 'utf16le');
     } else {
-      fs.writeFileSync(`./res/${subtitleFile}`, stringifySync(subtitles, { format: 'srt' }));
+      fs.writeFileSync(path.join(__dirname, `res/${subtitleFile}`), stringifySync(subtitles, { format: 'srt' }));
     }
   }
 }

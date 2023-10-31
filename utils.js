@@ -62,10 +62,19 @@ function parseTranslation(str) {
 
 function parseJSON(str) {
   let json = null;
-  str = str.split("\n").map(line=>line.trim().replace(/^\s+|\s+$/g,'')).join('')
+  str = str.split("\n").map(line=>{
+    line = line.trim();
+
+    if(!line.startsWith('"') && line.endsWith('",')) {
+      line = `"${line}`;
+    }
+
+    return line.replace(/^\s+|\s+$/g,'').replace(/:\s+"/g,':"').replace(/^\\"/,'"').replace(/",/g,'\\",').replace(/\\","/g,'","').replace(/\\",$/g,'",').replace(/”$/,'”"')
+  }).join('')
     .replace(',""}','}').replace(',}','}')
     .replace(',\'',',"').replace('\':','":')
-    .replace('",\\"','","').replace('\\":','":');
+    .replace('",\\"','","').replace('\\":','":')
+    .replace(/\\\\"/g,'\\"');
 
   if(!str.startsWith('{') || !str.endsWith('}')) {
     let match = str.match(/\{.*\}/);
@@ -80,11 +89,16 @@ function parseJSON(str) {
       throw e;
     }
     matches.forEach(match=>{
-      if(!match.startsWith('\\') && !match.endsWith(':')) {
-        str.replace(match, match.replace('"','\\"'));
+      if(!match.startsWith('\\') && !match.startsWith('{') && !match.startsWith(',') && !match.startsWith(':') && !match.endsWith(':') && !match.endsWith(',') && !match.endsWith('}')) {
+        str = str.replace(match, match.replace('"','\\"'));
       }
     });
-    json = JSON.parse(str);
+    try {
+      json = JSON.parse(str);
+    } catch(e) {
+      console.log(str);
+      throw e;
+    }
   }
   
   return json;

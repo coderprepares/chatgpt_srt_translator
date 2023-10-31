@@ -34,6 +34,19 @@ function log(message, level = 'debug') {
   fs.appendFileSync(logFile, logMessage);
 }
 
+function cache(key, value) {
+  let cacheFile = path.resolve(`logs/${filename}.cache.json`);
+  let cache = {};
+  if(fs.existsSync(cacheFile)) {
+    cache = JSON.parse(fs.readFileSync(cacheFile, { encoding: 'utf8' }));
+  }
+  if(value) {
+    cache[key] = value;
+    fs.writeFileSync(cacheFile, JSON.stringify(cache), { encoding: 'utf8' });
+  }
+  return cache[key];
+}
+
 function getCurrentTime() {
   const date = new Date();
   const year = date.getFullYear();
@@ -111,6 +124,7 @@ function writeUnicodeSrt(filePath, subtitles, encoding = 'utf8') {
 module.exports = {
   setFile,
   log,
+  cache,
   dump,
   undump,
   writeUnicodeSrt,

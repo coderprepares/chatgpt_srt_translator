@@ -16,9 +16,11 @@
 # 配置`config.json`
 - OpenAI API（二选一，优先生效）
   - 填写`OPENAI_API_KEY` [获取](https://platform.openai.com/account/api-keys)
-- ChatGPT PLUS（二选一）
-  - 填写`CHATGPT_AUTH_TOKEN`和`CHATGPT_COOKIES` [说明](https://github.com/mzbac/chatgpt-plus-api-client#getting-chatgpt_cookies-from-cookies)
-- 代理
+- ChatGPT HOST（二选一）
+  - 填写`CHATGPT_HOST` [HTTP服务](https://github.com/zhile-io/pandora/blob/master/doc/wiki.md#http%E6%9C%8D%E5%8A%A1%E6%96%87%E6%A1%A3)
+- API HOST（可选）
+  - 填写`OPENAI_API_HOST`，默认使用`https://api.openai.com/v1`
+- 代理（可选）
   - 填写`SOCKS_PROXY_HOST`和`SOCKS_PROXY_PORT`
 - 语言
   - 填写`TARGET_LANGUAGE`
@@ -26,9 +28,9 @@
 ## 配置文件示例
 ```json
 {
-  "OPENAI_API_KEY": "sk-xxxxxxxxxx",
-  "CHATGPT_AUTH_TOKEN": "Bearer xxxxxxxxxx",
-  "CHATGPT_COOKIES": "_puid=user-xxxxxxxxxx",
+  "CHATGPT_HOST": "http://127.0.0.1:8008",
+  "OPENAI_API_KEY": "ak-xxxxxxxxxx",
+  "OPENAI_API_HOST": "https://api.aios.chat/v1",
   "TARGET_LANGUAGE": "Simplified Chinese",
   "SOCKS_PROXY_HOST": "127.0.0.1",
   "SOCKS_PROXY_PORT": "7890"
@@ -43,3 +45,4 @@
 # 参考
 - [gnehs/subtitle-translator](https://github.com/gnehs/subtitle-translator)
 - [mzbac/chatgpt-plus-api-client](https://github.com/mzbac/chatgpt-plus-api-client)
+- [zhile-io/pandora](https://github.com/zhile-io/pandora)

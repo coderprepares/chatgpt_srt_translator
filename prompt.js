@@ -3,24 +3,14 @@ const {ask: askAPI} = require('./openai.js');
 const {log} = require('./debug.js');
 const {filterNL, formatTexts} = require('./utils.js');
 const config = require('./config.json');
-const crypto = require('crypto');
 
 async function ask(prompt, parentMessageId = null, conversationId = null, preserveHistory = false) {
-  if(config.APP_DEBUG) {
-    const hash = crypto.createHash('md5').update(prompt).digest('hex');
-    log(hash);
-
-    // if(hash == '30f2c980fe50ae36cccf1b12eebb69a5') {
-    //   return {content: `{}`};
-    // }
-  }
-
-  if(config.OPENAI_API_KEY) {
+  if(!config.APP_DEBUG && config.OPENAI_API_KEY) {
     return askAPI(prompt, parentMessageId, conversationId, preserveHistory);
-  } else if(config.CHATGPT_AUTH_TOKEN && config.CHATGPT_COOKIES) {
+  } else if(config.CHATGPT_HOST) {
     return askGPT(prompt, parentMessageId, conversationId, preserveHistory);
   } else {
-    throw new Error('Please configure OPENAI_API_KEY or CHATGPT_AUTH_TOKEN');
+    throw new Error('Please configure OPENAI_API_KEY or CHATGPT_HOST');
   }
 }
 
